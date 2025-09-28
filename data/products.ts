@@ -7,7 +7,7 @@ export const mockProducts: Product[] = [
     name: "Trầm Hương Kỳ Nam Cao Cấp",
     description: "Trầm hương kỳ nam thiên nhiên, hương thơm thanh tao, mang lại bình an và thịnh vượng cho gia đình.",
     price: 2500000,
-    images: ["/agarwood-incense-sticks.jpg", "/agarwood-incense-sticks.jpg", "/agarwood-incense-sticks.jpg"],
+    images: ["/premium-agarwood-incense-sticks.jpg", "/agarwood-incense-burning.jpg", "/agarwood-incense-packaging.jpg"],
     category: "Trầm Hương",
     fengShuiProperties: {
       element: "wood",
@@ -30,7 +30,7 @@ export const mockProducts: Product[] = [
     name: "Vòng Tay Trầm Hương 108 Hạt",
     description: "Vòng tay trầm hương 108 hạt, giúp tĩnh tâm, an thần và mang lại may mắn.",
     price: 850000,
-    images: ["/agarwood-bracelet-108-beads.jpg", "/agarwood-bracelet-108-beads.jpg", "/agarwood-bracelet-108-beads.jpg"],
+    images: ["/agarwood-prayer-beads-bracelet-108.jpg", "/wooden-prayer-beads-on-hand.jpg", "/buddhist-prayer-beads-close-up.jpg"],
     category: "Vòng Tay",
     fengShuiProperties: {
       element: "wood",
@@ -57,7 +57,7 @@ export const mockProducts: Product[] = [
     name: "Tượng Phật Di Lặc Gỗ Trầm",
     description: "Tượng Phật Di Lặc được chạm khắc tinh xảo từ gỗ trầm hương, mang lại hạnh phúc và thịnh vượng.",
     price: 3200000,
-    images: ["/buddha-statue-agarwood.jpg", "/buddha-statue-agarwood.jpg", "/buddha-statue-agarwood.jpg"],
+    images: ["/laughing-buddha-statue-agarwood.jpg", "/wooden-buddha-statue-carved.jpg", "/feng-shui-buddha-statue.jpg"],
     category: "Tượng Phong Thủy",
     fengShuiProperties: {
       element: "earth",
@@ -80,7 +80,7 @@ export const mockProducts: Product[] = [
     name: "Lư Hương Đồng Cổ Điển",
     description: "Lư hương bằng đồng thiết kế cổ điển, dùng để đốt trầm hương, tạo không gian thiêng liêng.",
     price: 680000,
-    images: ["/bronze-incense-burner.jpg", "/bronze-incense-burner.jpg", "/bronze-incense-burner.jpg"],
+    images: ["/bronze-incense-burner-traditional.jpg", "/antique-incense-holder-copper.jpg", "/feng-shui-incense-burner.jpg"],
     category: "Đồ Trang Trí",
     fengShuiProperties: {
       element: "metal",
@@ -103,7 +103,7 @@ export const mockProducts: Product[] = [
     name: "Nhẫn Trầm Hương Nam",
     description: "Nhẫn nam được làm từ gỗ trầm hương tự nhiên, thiết kế đơn giản, thanh lịch.",
     price: 450000,
-    images: ["/agarwood-ring-men.jpg", "/agarwood-ring-men.jpg", "/agarwood-ring-men.jpg"],
+    images: ["/agarwood-ring-for-men.jpg", "/wooden-ring-natural-grain.jpg", "/mens-wooden-jewelry-ring.jpg"],
     category: "Nhẫn Phong Thủy",
     fengShuiProperties: {
       element: "wood",
@@ -131,7 +131,7 @@ export const mockProducts: Product[] = [
     name: "Chuỗi Trầm Hương 54 Hạt",
     description: "Chuỗi trầm hương 54 hạt, kích thước vừa phải, phù hợp để đeo cổ hoặc cầm tay.",
     price: 1200000,
-    images: ["/agarwood-necklace-54-beads.jpg", "/agarwood-necklace-54-beads.jpg", "/agarwood-necklace-54-beads.jpg"],
+    images: ["/agarwood-necklace-54-beads.jpg", "/wooden-prayer-beads-necklace.jpg", "/buddhist-mala-beads.jpg"],
     category: "Phụ Kiện",
     fengShuiProperties: {
       element: "wood",
@@ -191,12 +191,12 @@ export const getCategoryIcon = (category: string) => {
 // Get category image
 export const getCategoryImage = (category: string) => {
   const imageMap: Record<string, string> = {
-    "Trầm Hương": "/tram-huong.svg",
-    "Vòng Tay": "/vong-tay.svg",
-    "Tượng Phong Thủy": "/tuong-phong-thuy.svg",
-    "Đồ Trang Trí": "/do-trang-tri.svg",
-    "Nhẫn Phong Thủy": "/nhan-phong-thuy.svg",
-    "Phụ Kiện": "/phu-kien.svg"
+    "Trầm Hương": "/tram-huong.png",
+    "Vòng Tay": "/vong-tay.png",
+    "Tượng Phong Thủy": "/tuong-phong-thuy.png",
+    "Đồ Trang Trí": "/do-trang-tri.png",
+    "Nhẫn Phong Thủy": "/nhan-phong-thuy.png",
+    "Phụ Kiện": "/phu-kien.png"
   }
   return imageMap[category] || "/category-default.svg"
 }

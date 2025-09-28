@@ -111,13 +111,13 @@ export default function HomePage() {
               >
                 <Card className="hover:shadow-md transition-shadow cursor-pointer">
                   <CardContent className="p-6 text-center">
-                    <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3 overflow-hidden">
+                    <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3 overflow-hidden">
                       <Image
                         src={category.image}
                         alt={category.name}
-                        width={32}
-                        height={32}
-                        className="object-cover"
+                        width={64}
+                        height={64}
+                        className="object-contain"
                       />
                     </div>
                     <h3 className="font-medium text-sm">{category.name}</h3>
