@@ -1,51 +1,29 @@
-"use client"
-
-import { useState, useMemo } from "react"
-import { useParams, useRouter } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
-import { Button } from "../../../../components/ui/button"
-import { SimpleProductGrid } from "../../../../components/products/SimpleProductGrid"
-import { ProductFilter } from "../../../../components/products/ProductFilter"
-import { getProductsByCategory, getCategories, getCategoryIcon } from "../../../../data/products"
-import type { ProductFilters } from "../../../../types"
-import { applyProductFilters } from "../../../../utils"
+import Link from "next/link"
+import { getProductsByCategory, getCategories } from "../../../../data/products"
+import { CategoryPageClient } from "./CategoryPageClient"
 
-export default function CategoryPage() {
-  const params = useParams()
-  const router = useRouter()
-  const slug = params.slug as string
+interface CategoryPageProps {
+  params: { slug: string }
+}
 
-  const [filters, setFilters] = useState<ProductFilters>({})
+export default function CategoryPage({ params }: CategoryPageProps) {
+  const { slug } = params
 
   const categories = getCategories()
   const currentCategory = categories.find(cat => cat.slug === slug)
-
-  // Get products for this category
-  const categoryProducts = useMemo(() => {
-    return getProductsByCategory(slug)
-  }, [slug])
-
-  // Apply filters to products
-  const filteredProducts = useMemo(() => {
-    return applyProductFilters(categoryProducts, filters)
-  }, [categoryProducts, filters])
-
-  const handleFiltersChange = (newFilters: Partial<ProductFilters>) => {
-    setFilters(prev => ({ ...prev, ...newFilters }))
-  }
-
-  const handleClearFilters = () => {
-    setFilters({})
-  }
+  const categoryProducts = getProductsByCategory(slug)
 
   if (!currentCategory) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Danh mục không tồn tại</h1>
-          <Button onClick={() => router.push('/products')}>
-            Quay lại sản phẩm
-          </Button>
+          <Link href="/products" className="inline-block">
+            <button className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90">
+              Quay lại sản phẩm
+            </button>
+          </Link>
         </div>
       </div>
     )
@@ -55,55 +33,26 @@ export default function CategoryPage() {
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8">
-        <Button
-          variant="ghost"
-          onClick={() => router.push('/products')}
-          className="mb-4 p-0 h-auto font-normal text-muted-foreground hover:text-foreground"
-        >
+        <Link href="/products" className="inline-flex items-center mb-4 p-0 h-auto font-normal text-muted-foreground hover:text-foreground">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Quay lại tất cả sản phẩm
-        </Button>
+        </Link>
 
         <div className="flex items-center gap-3 mb-4">
           <span className="text-4xl">{currentCategory.icon}</span>
           <div>
             <h1 className="text-3xl font-bold">{currentCategory.name}</h1>
             <p className="text-muted-foreground">
-              {filteredProducts.length} sản phẩm • Trầm Hân Agarwood
+              {categoryProducts.length} sản phẩm • Trầm Hân Agarwood
             </p>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Sidebar Filter */}
-        <div className="lg:col-span-1">
-          <ProductFilter
-            filters={filters}
-            onFiltersChange={handleFiltersChange}
-            onClearFilters={handleClearFilters}
-            products={categoryProducts}
-          />
-        </div>
-
-        {/* Products Grid */}
-        <div className="lg:col-span-3">
-          {filteredProducts.length > 0 ? (
-            <SimpleProductGrid products={filteredProducts} />
-          ) : (
-            <div className="text-center py-12">
-              <div className="text-6xl mb-4">{currentCategory.icon}</div>
-              <h2 className="text-xl font-semibold mb-2">Không có sản phẩm nào</h2>
-              <p className="text-muted-foreground mb-4">
-                Hiện tại chúng tôi chưa có sản phẩm nào trong danh mục này.
-              </p>
-              <Button onClick={handleClearFilters} variant="outline">
-                Xóa bộ lọc
-              </Button>
-            </div>
-          )}
-        </div>
-      </div>
+      <CategoryPageClient
+        currentCategory={currentCategory}
+        categoryProducts={categoryProducts}
+      />
     </div>
   )
 }
