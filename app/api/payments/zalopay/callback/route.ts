@@ -1,5 +1,5 @@
+import { zalopayService } from "@/services/payment/zalopay"
 import { NextRequest, NextResponse } from "next/server"
-import { zalopayService } from "../../../../services/payment/zalopay"
 
 export async function POST(req: NextRequest) {
   try {

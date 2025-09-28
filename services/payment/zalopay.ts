@@ -6,8 +6,8 @@ export interface ZaloPayConfig {
   key1: string
   key2: string
   endpoint: string
-  redirectUrl: string
-  callbackUrl: string
+  redirectUrl?: string
+  callbackUrl?: string
 }
 
 export class ZaloPayService {
@@ -19,8 +19,8 @@ export class ZaloPayService {
       key1: process.env.NEXT_PUBLIC_ZALOPAY_KEY1 || "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL",
       key2: process.env.ZALOPAY_KEY2 || "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz",
       endpoint: process.env.ZALOPAY_ENDPOINT || "https://sb-openapi.zalopay.vn/v2/create",
-      redirectUrl: `${window.location.origin}/checkout/zalopay-return`,
-      callbackUrl: `${window.location.origin}/api/payments/zalopay/callback`,
+      // redirectUrl: `${window.location.origin}/checkout/zalopay-return`,
+      // callbackUrl: `${window.location.origin}/api/payments/zalopay/callback`,
     }
   }
 

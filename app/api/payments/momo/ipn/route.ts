@@ -1,5 +1,5 @@
+import { momoService } from "@/services/payment/momo"
 import { NextRequest, NextResponse } from "next/server"
-import { momoService } from "../../../../services/payment/momo"
 
 export async function POST(req: NextRequest) {
   try {
