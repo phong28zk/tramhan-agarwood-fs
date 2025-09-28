@@ -236,3 +236,66 @@ export const debounce = <T extends (...args: any[]) => any>(
     timeout = setTimeout(() => func(...args), wait)
   }
 }
+
+// Apply Product Filters
+export const applyProductFilters = (products: any[], filters: any): any[] => {
+  let filteredProducts = [...products]
+
+  // Search query filter
+  if (filters.searchQuery) {
+    filteredProducts = searchProducts(filteredProducts, filters.searchQuery)
+  }
+
+  // Category filter
+  if (filters.category) {
+    filteredProducts = filteredProducts.filter(product => product.category === filters.category)
+  }
+
+  // Price range filter
+  if (filters.priceRange) {
+    filteredProducts = filteredProducts.filter(product =>
+      product.price >= filters.priceRange.min && product.price <= filters.priceRange.max
+    )
+  }
+
+  // Feng shui element filter
+  if (filters.fengShuiElement) {
+    filteredProducts = filteredProducts.filter(product =>
+      product.fengShuiProperties?.element === filters.fengShuiElement
+    )
+  }
+
+  // In stock filter
+  if (filters.inStock) {
+    filteredProducts = filteredProducts.filter(product => product.inStock === true)
+  }
+
+  // Sort products
+  if (filters.sortBy) {
+    filteredProducts.sort((a, b) => {
+      let comparison = 0
+
+      switch (filters.sortBy) {
+        case 'name':
+          comparison = a.name.localeCompare(b.name, 'vi')
+          break
+        case 'price':
+          comparison = a.price - b.price
+          break
+        case 'date':
+          comparison = new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          break
+        case 'popularity':
+          // Assume popularity based on stock quantity (lower = more popular)
+          comparison = a.stockQuantity - b.stockQuantity
+          break
+        default:
+          return 0
+      }
+
+      return filters.sortOrder === 'desc' ? -comparison : comparison
+    })
+  }
+
+  return filteredProducts
+}

@@ -13,6 +13,11 @@ export const metadata: Metadata = {
   description:
     "Chuyên cung cấp trầm hương, vòng tay phong thủy, tượng phong thủy chất lượng cao. Mang lại bình an và thịnh vượng cho gia đình bạn.",
   generator: "v0.app",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
 }
 
 export default function RootLayout({

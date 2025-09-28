@@ -47,6 +47,9 @@ export function ProductFilter({ filters, onFiltersChange, onClearFilters, produc
   // Get unique categories from products
   const categories = Array.from(new Set(products.map((p) => p.category)))
 
+  // Get current category from URL if we're filtering within a category
+  const currentCategory = filters.category
+
   // Get unique feng shui elements
   const fengShuiElements = Array.from(
     new Set(products.filter((p) => p.fengShuiProperties).map((p) => p.fengShuiProperties!.element)),
@@ -93,26 +96,28 @@ export function ProductFilter({ filters, onFiltersChange, onClearFilters, produc
           </div>
         </div>
 
-        {/* Category Filter */}
-        <div className="space-y-2">
-          <Label>Danh mục</Label>
-          <Select
-            value={filters.category || "all"}
-            onValueChange={(value) => onFiltersChange({ category: value === "all" ? undefined : value })}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Chọn danh mục" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{viLocale.common.all}</SelectItem>
-              {categories.map((category) => (
-                <SelectItem key={category} value={category}>
-                  {viLocale.categories[category as keyof typeof viLocale.categories] || category}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        {/* Category Filter - Only show if not filtering by specific category */}
+        {!currentCategory && categories.length > 1 && (
+          <div className="space-y-2">
+            <Label>Danh mục</Label>
+            <Select
+              value={filters.category || "all"}
+              onValueChange={(value) => onFiltersChange({ category: value === "all" ? undefined : value as any })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Chọn danh mục" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{viLocale.common.all}</SelectItem>
+                {categories.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {viLocale.categories[category as keyof typeof viLocale.categories] || category}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
 
         {/* Price Range */}
         <div className="space-y-4">
