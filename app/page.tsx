@@ -4,8 +4,10 @@ import { useEffect } from "react"
 import { Button } from "../components/ui/button"
 import { Card, CardContent } from "../components/ui/card"
 import { ArrowRight, Truck, Shield, RotateCcw } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
 import { ProductCard } from "../components/products/ProductCard"
-import { mockProducts } from "../data/products"
+import { mockProducts, getCategories } from "../data/products"
 import { useProductsStore } from "../store"
 import { viLocale } from "../locales/vi"
 import { HeroSection } from "../components/home/HeroSection"
@@ -101,15 +103,27 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {Object.entries(viLocale.categories).map(([key, name]) => (
-              <Card key={key} className="hover:shadow-md transition-shadow cursor-pointer">
-                <CardContent className="p-6 text-center">
-                  <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <span className="text-2xl">🏮</span>
-                  </div>
-                  <h3 className="font-medium text-sm">{name}</h3>
-                </CardContent>
-              </Card>
+            {getCategories().map((category) => (
+              <Link
+                key={category.slug}
+                href={`/products?category=${category.slug}`}
+                className="block"
+              >
+                <Card className="hover:shadow-md transition-shadow cursor-pointer">
+                  <CardContent className="p-6 text-center">
+                    <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3 overflow-hidden">
+                      <Image
+                        src={category.image}
+                        alt={category.name}
+                        width={32}
+                        height={32}
+                        className="object-cover"
+                      />
+                    </div>
+                    <h3 className="font-medium text-sm">{category.name}</h3>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>
