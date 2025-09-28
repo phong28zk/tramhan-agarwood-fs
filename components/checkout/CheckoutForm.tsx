@@ -44,6 +44,13 @@ export function CheckoutForm({ onOrderComplete }: CheckoutFormProps) {
   const canPlaceOrder = !!shippingAddress && !!paymentMethod && items.length > 0
 
   const handleShippingSubmit = (address: ShippingAddress) => {
+    // Debug logging for checkout step transition
+    console.group('🛒 Checkout Step: Shipping Completed')
+    console.log('Address Data:', address)
+    console.log('Current Cart Total:', total)
+    console.log('Timestamp:', new Date().toISOString())
+    console.groupEnd()
+
     setShippingAddress(address)
     const order: Order = {
       id: `TH${Date.now().toString(36).toUpperCase()}`,
@@ -60,11 +67,20 @@ export function CheckoutForm({ onOrderComplete }: CheckoutFormProps) {
       updatedAt: new Date(),
     }
     setCurrentOrder(order)
+
+    console.log('✅ Order created, navigating to payment step')
     setCurrentStep("payment")
     showToast("Đã lưu thông tin giao hàng", "success")
   }
 
   const handlePaymentSubmit = (payment: PaymentMethod) => {
+    // Debug logging for payment step
+    console.group('🛒 Checkout Step: Payment Selected')
+    console.log('Payment Method:', payment)
+    console.log('Order ID:', currentOrder?.id)
+    console.log('Timestamp:', new Date().toISOString())
+    console.groupEnd()
+
     setPaymentMethod(payment)
     if (currentOrder) {
       setCurrentOrder({
@@ -73,6 +89,8 @@ export function CheckoutForm({ onOrderComplete }: CheckoutFormProps) {
         updatedAt: new Date(),
       })
     }
+
+    console.log('✅ Payment method saved, navigating to review step')
     setCurrentStep("review")
     showToast("Đã chọn phương thức thanh toán", "success")
   }

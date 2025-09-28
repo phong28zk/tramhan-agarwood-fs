@@ -8,6 +8,7 @@ import { Edit, Gift, Truck } from "lucide-react"
 import { useCartStore } from "../../store"
 import { formatVNDCurrency } from "../../utils"
 import { viLocale } from "../../locales/vi"
+import { PaymentQRCode } from "../payment/PaymentQRCode"
 
 interface OrderSummaryProps {
   showEditButton?: boolean
@@ -140,6 +141,17 @@ export function OrderSummary({ showEditButton = true, onEdit }: OrderSummaryProp
             <p className="text-xs text-amber-700">
               Mua thêm <strong>{formatVNDCurrency(500000 - subtotal)}</strong> để được miễn phí vận chuyển
             </p>
+          </div>
+        )}
+
+        {/* QR Code Payment */}
+        {total > 0 && (
+          <div className="mt-4">
+            <PaymentQRCode
+              amount={total}
+              orderId={`TH${Date.now().toString(36).toUpperCase()}`}
+              paymentMethods={['momo', 'zalopay', 'vnpay']}
+            />
           </div>
         )}
       </CardContent>

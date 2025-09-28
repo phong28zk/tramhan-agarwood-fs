@@ -214,3 +214,56 @@ export interface PaymentResult {
   error?: string
   errorCode?: string
 }
+
+// QR Code Payment Types
+export interface PaymentQRData {
+  amount: number
+  currency: 'VND'
+  orderId: string
+  description: string
+  methods: string[]
+  timestamp: string
+}
+
+export interface QRCodeGeneratorProps {
+  amount: number
+  orderId?: string
+  paymentMethods?: string[]
+}
+
+// Enhanced Cart Store with Debugging
+export interface EnhancedCartStore extends Cart {
+  // Add debugging methods
+  logCartState: () => void
+  validateCalculations: () => boolean
+
+  // Enhanced calculation method
+  recalculateTotal: () => void
+}
+
+// Debug Information Types
+export interface DebugInfo {
+  timestamp: string
+  userAgent: string
+  url: string
+  viewport: {
+    width: number
+    height: number
+  }
+}
+
+// Form Validation Types
+export interface ValidationResult {
+  valid: boolean
+  errors?: Record<string, string>
+  data?: any
+}
+
+// Checkout Debug Types
+export interface CheckoutDebugState {
+  currentStep: string
+  formData?: any
+  validationState?: any
+  errors?: any[]
+  timestamp: string
+}

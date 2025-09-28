@@ -13,6 +13,8 @@ interface CartStore extends Cart {
   removePromoCode: () => void
   updateShipping: (address: ShippingAddress) => void
   recalculateTotal: () => void
+  logCartState: () => void
+  validateCalculations: () => boolean
 }
 
 export const useCartStore = create<CartStore>()(
@@ -143,21 +145,76 @@ export const useCartStore = create<CartStore>()(
 
       recalculateTotal: () => {
         const state = get()
+
+        // Enhanced calculation logic with proper validation
         const subtotal = state.items.reduce((sum, item) => {
-          const price = item.selectedVariant?.price || item.product.price
-          return sum + price * item.quantity
+          const itemPrice = item.selectedVariant?.price || item.product.price
+          return sum + (itemPrice * item.quantity)
         }, 0)
 
         const tax = calculateTax(subtotal)
-        const total = subtotal + state.shipping + tax - state.discount
+        const finalTotal = subtotal + state.shipping + tax - state.discount
         const itemCount = state.items.reduce((count, item) => count + item.quantity, 0)
 
         set({
           subtotal,
           tax,
-          total: Math.max(0, total),
+          total: Math.max(0, finalTotal),
           itemCount,
         })
+
+        // Validate calculations in development
+        if (process.env.NODE_ENV === 'development') {
+          get().validateCalculations()
+        }
+      },
+
+      logCartState: () => {
+        const state = get()
+        console.group('🛒 Cart State Debug')
+        console.log('Items:', state.items)
+        console.log('Subtotal:', state.subtotal)
+        console.log('Shipping:', state.shipping)
+        console.log('Tax:', state.tax)
+        console.log('Discount:', state.discount)
+        console.log('Total:', state.total)
+        console.log('Item Count:', state.itemCount)
+        console.log('Promo Code:', state.promoCode)
+        console.log('Timestamp:', new Date().toISOString())
+        console.groupEnd()
+      },
+
+      validateCalculations: (): boolean => {
+        const state = get()
+
+        // Validate subtotal calculation
+        const expectedSubtotal = state.items.reduce((sum, item) => {
+          const price = item.selectedVariant?.price || item.product.price
+          return sum + (price * item.quantity)
+        }, 0)
+
+        const expectedItemCount = state.items.reduce((count, item) => count + item.quantity, 0)
+        const expectedTax = calculateTax(expectedSubtotal)
+        const expectedTotal = Math.max(0, expectedSubtotal + state.shipping + expectedTax - state.discount)
+
+        const subtotalValid = Math.abs(state.subtotal - expectedSubtotal) < 0.01
+        const itemCountValid = state.itemCount === expectedItemCount
+        const taxValid = Math.abs(state.tax - expectedTax) < 0.01
+        const totalValid = Math.abs(state.total - expectedTotal) < 0.01
+
+        const isValid = subtotalValid && itemCountValid && taxValid && totalValid
+
+        if (!isValid) {
+          console.error('💰 Cart calculation mismatch:', {
+            subtotal: { calculated: state.subtotal, expected: expectedSubtotal, valid: subtotalValid },
+            itemCount: { calculated: state.itemCount, expected: expectedItemCount, valid: itemCountValid },
+            tax: { calculated: state.tax, expected: expectedTax, valid: taxValid },
+            total: { calculated: state.total, expected: expectedTotal, valid: totalValid },
+            items: state.items
+          })
+        }
+
+        return isValid
       },
     }),
     {

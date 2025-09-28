@@ -23,13 +23,23 @@ export function PaymentForm({ shippingAddress, order, onSubmit, onBack }: Paymen
   const [isProcessing, setIsProcessing] = useState(false)
 
   const handleMethodSelect = (method: PaymentMethod) => {
+    // Debug logging for payment method selection
+    console.group('💳 Payment Method Selection')
+    console.log('Selected Method:', method)
+    console.log('Order ID:', order.id)
+    console.log('Order Total:', order.total)
+    console.log('Timestamp:', new Date().toISOString())
+    console.groupEnd()
+
     setSelectedMethod(method)
 
     // For Vietnamese payment methods and COD/Bank Transfer, proceed directly
     if (["vnpay", "momo", "zalopay", "cod", "bank_transfer"].includes(method.type)) {
+      console.log('✅ Vietnamese payment method selected, showing payment form')
       setShowPaymentForm(true)
     } else if (method.type === "stripe") {
       // For Stripe, show the payment form
+      console.log('✅ Stripe payment method selected, showing payment form')
       setShowPaymentForm(true)
     }
   }

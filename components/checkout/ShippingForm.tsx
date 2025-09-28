@@ -91,9 +91,39 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
     return hasAttemptedSubmit && errors[fieldName]
   }
 
+  // Enhanced validation wrapper
+  const validateAndSubmit = async (data: ShippingFormData) => {
+    try {
+      console.log('🔍 Starting form validation...')
+
+      // Validate required fields
+      const validationResult = shippingSchema.safeParse(data)
+
+      if (!validationResult.success) {
+        console.error('❌ Validation failed:', validationResult.error.issues)
+        setHasAttemptedSubmit(true)
+        return
+      }
+
+      console.log('✅ Validation passed')
+      await handleFormSubmit(validationResult.data)
+
+    } catch (error) {
+      console.error('💥 Form submission error:', error)
+      // In a real app, this would show a toast notification
+    }
+  }
+
   const handleFormSubmit = (data: ShippingFormData) => {
+    // Debug logging
+    console.group('🚚 Shipping Form Submission')
+    console.log('Form Data:', data)
+    console.log('Validation State:', { hasAttemptedSubmit, errors })
+    console.log('Timestamp:', new Date().toISOString())
+    console.groupEnd()
+
     setHasAttemptedSubmit(true)
-    
+
     const shippingAddress: ShippingAddress = {
       fullName: data.fullName,
       phone: data.phone,
@@ -105,9 +135,13 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
       postalCode: data.postalCode || undefined,
     }
 
+    // Additional logging for address processing
+    console.log('📍 Processed Shipping Address:', shippingAddress)
+
     // Save address if requested
     if (data.saveAddress) {
       addAddress(shippingAddress)
+      console.log('💾 Address saved to user store')
     }
 
     onSubmit(shippingAddress)
@@ -175,7 +209,7 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
 
       {/* New Address Form */}
       {showNewAddressForm && (
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+        <form onSubmit={handleSubmit(validateAndSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Full Name */}
             <div className="space-y-2">
