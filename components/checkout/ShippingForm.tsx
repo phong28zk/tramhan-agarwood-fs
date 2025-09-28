@@ -91,6 +91,11 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
     return hasAttemptedSubmit && errors[fieldName]
   }
 
+  // Helper function to get error message
+  const getErrorMessage = (fieldName: keyof ShippingFormData) => {
+    return errors[fieldName]?.message || "Trường này là bắt buộc"
+  }
+
   // Enhanced validation wrapper
   const validateAndSubmit = async (data: ShippingFormData) => {
     try {
@@ -218,7 +223,7 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
               </Label>
               <Input id="fullName" {...register("fullName")} placeholder="Nhập họ và tên" />
               {shouldShowError("fullName") && (
-                <p className="text-sm text-red-500">Required</p>
+                <p className="text-sm text-red-500">{getErrorMessage("fullName")}</p>
               )}
             </div>
 
@@ -229,7 +234,7 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
               </Label>
               <Input id="phone" {...register("phone")} placeholder="0123 456 789" />
               {shouldShowError("phone") && (
-                <p className="text-sm text-red-500">Required</p>
+                <p className="text-sm text-red-500">{getErrorMessage("phone")}</p>
               )}
             </div>
           </div>
@@ -243,7 +248,7 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
               {...register("email")}
               placeholder="email@example.com"
             />
-            {shouldShowError("email") && <p className="text-sm text-red-500">Required</p>}
+            {shouldShowError("email") && <p className="text-sm text-red-500">{getErrorMessage("email")}</p>}
           </div>
 
           {/* Province */}
@@ -263,7 +268,7 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
                 ))}
               </SelectContent>
             </Select>
-            {shouldShowError("province") && <p className="text-sm text-red-500">Required</p>}
+            {shouldShowError("province") && <p className="text-sm text-red-500">{getErrorMessage("province")}</p>}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -273,7 +278,7 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
                 {viLocale.checkout.district} <span className="text-red-500">*</span>
               </Label>
               <Input id="district" {...register("district")} placeholder="Nhập quận/huyện" />
-              {shouldShowError("district") && <p className="text-sm text-red-500">Required</p>}
+              {shouldShowError("district") && <p className="text-sm text-red-500">{getErrorMessage("district")}</p>}
             </div>
 
             {/* Ward */}
@@ -282,7 +287,7 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
                 {viLocale.checkout.ward} <span className="text-red-500">*</span>
               </Label>
               <Input id="ward" {...register("ward")} placeholder="Nhập phường/xã" />
-              {shouldShowError("ward") && <p className="text-sm text-red-500">Required</p>}
+              {shouldShowError("ward") && <p className="text-sm text-red-500">{getErrorMessage("ward")}</p>}
             </div>
           </div>
 
@@ -292,7 +297,7 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
               {viLocale.checkout.address} <span className="text-red-500">*</span>
             </Label>
             <Input id="address" {...register("address")} placeholder="Số nhà, tên đường" />
-            {shouldShowError("address") && <p className="text-sm text-red-500">Required</p>}
+            {shouldShowError("address") && <p className="text-sm text-red-500">{getErrorMessage("address")}</p>}
           </div>
 
           {/* Postal Code */}

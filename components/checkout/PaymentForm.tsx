@@ -9,6 +9,7 @@ import { formatVNDCurrency } from "../../utils"
 import { PaymentMethodSelector } from "../payment/PaymentMethodSelector"
 import { StripePaymentForm } from "../payment/StripePaymentForm"
 import { VNPaymentForm } from "../payment/VNPaymentForm"
+import { PaymentQRCode } from "../payment/PaymentQRCode"
 
 interface PaymentFormProps {
   shippingAddress: ShippingAddress
@@ -91,6 +92,15 @@ export function PaymentForm({ shippingAddress, order, onSubmit, onBack }: Paymen
         <div className="space-y-4">
           <h3 className="font-medium">Chọn phương thức thanh toán</h3>
           <PaymentMethodSelector order={order} onMethodSelect={handleMethodSelect} />
+        </div>
+
+        {/* QR Code Payment */}
+        <div className="space-y-4">
+          <PaymentQRCode
+            amount={order.total}
+            orderId={order.id}
+            paymentMethods={['momo', 'zalopay', 'vnpay']}
+          />
         </div>
 
         {/* Security Notice */}
