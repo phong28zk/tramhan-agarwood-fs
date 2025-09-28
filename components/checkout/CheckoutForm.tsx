@@ -48,10 +48,13 @@ export function CheckoutForm({ onOrderComplete }: CheckoutFormProps) {
     console.group('🛒 Checkout Step: Shipping Completed')
     console.log('Address Data:', address)
     console.log('Current Cart Total:', total)
+    console.log('Current Step Before:', currentStep)
     console.log('Timestamp:', new Date().toISOString())
     console.groupEnd()
 
+    console.log('🔄 Setting shipping address...')
     setShippingAddress(address)
+
     const order: Order = {
       id: `TH${Date.now().toString(36).toUpperCase()}`,
       items,
@@ -66,10 +69,20 @@ export function CheckoutForm({ onOrderComplete }: CheckoutFormProps) {
       createdAt: new Date(),
       updatedAt: new Date(),
     }
+
+    console.log('📝 Created order:', order.id)
     setCurrentOrder(order)
 
-    console.log('✅ Order created, navigating to payment step')
+    console.log('🚀 Transitioning to payment step...')
+    console.log('Current Step Before setCurrentStep:', currentStep)
+
     setCurrentStep("payment")
+
+    // Add a timeout to check if the step actually changed
+    setTimeout(() => {
+      console.log('✅ Step transition complete. Current step:', currentStep)
+    }, 100)
+
     showToast("Đã lưu thông tin giao hàng", "success")
   }
 

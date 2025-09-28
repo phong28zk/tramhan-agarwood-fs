@@ -144,16 +144,6 @@ export function OrderSummary({ showEditButton = true, onEdit }: OrderSummaryProp
           </div>
         )}
 
-        {/* QR Code Payment */}
-        {total > 0 && (
-          <div className="mt-4">
-            <PaymentQRCode
-              amount={total}
-              orderId={`TH${Date.now().toString(36).toUpperCase()}`}
-              paymentMethods={['momo', 'zalopay', 'vnpay']}
-            />
-          </div>
-        )}
       </CardContent>
     </Card>
   )

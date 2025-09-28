@@ -54,8 +54,8 @@ export function CartDrawer({ children }: CartDrawerProps) {
         )}
       </SheetTrigger>
 
-      <SheetContent className="w-full sm:max-w-lg flex flex-col">
-        <SheetHeader className="space-y-2.5 pr-6">
+      <SheetContent className="w-full sm:max-w-lg flex flex-col h-full">
+        <SheetHeader className="space-y-2.5 pr-6 flex-shrink-0">
           <div className="flex items-center justify-between">
             <SheetTitle className="text-lg font-semibold">{viLocale.cart.title}</SheetTitle>
             {items.length > 0 && (
@@ -96,42 +96,45 @@ export function CartDrawer({ children }: CartDrawerProps) {
           </div>
         ) : (
           // Cart with Items
-          <div className="flex-1 flex flex-col">
-            {/* Cart Items */}
-            <ScrollArea className="flex-1 -mx-6 px-6">
-              <div className="space-y-4 py-4">
-                {items.map((item) => (
-                  <CartItem key={`${item.product.id}-${item.selectedVariant?.id || "default"}`} item={item} />
-                ))}
+          <div className="flex-1 flex flex-col min-h-0">
+            {/* Scrollable Content */}
+            <ScrollArea className="flex-1 -mx-6 px-6" style={{ height: 'calc(100vh - 120px)' }}>
+              <div className="space-y-4 py-4 pb-8">
+                {/* Cart Items */}
+                <div className="space-y-3">
+                  {items.map((item) => (
+                    <CartItem key={`${item.product.id}-${item.selectedVariant?.id || "default"}`} item={item} />
+                  ))}
+                </div>
+
+                {/* Promo Code Section */}
+                <div className="py-4 border-t">
+                  <PromoCodeInput />
+                </div>
+
+                {/* Free Shipping Progress */}
+                <div className="py-4">
+                  <FreeShippingProgress subtotal={subtotal} />
+                </div>
+
+                {/* Cart Summary */}
+                <div className="py-4 border-t">
+                  <CartSummary />
+                </div>
+
+                {/* Checkout Button */}
+                <div className="pt-4 border-t">
+                  <Button onClick={handleCheckout} className="w-full bg-amber-600 hover:bg-amber-700" size="lg">
+                    {viLocale.cart.checkout}
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+
+                  <p className="text-xs text-muted-foreground text-center mt-2">
+                    Phí vận chuyển và thuế sẽ được tính khi thanh toán
+                  </p>
+                </div>
               </div>
             </ScrollArea>
-
-            {/* Promo Code Section */}
-            <div className="py-4 border-t">
-              <PromoCodeInput />
-            </div>
-
-            {/* Free Shipping Progress */}
-            <div className="py-4">
-              <FreeShippingProgress subtotal={subtotal} />
-            </div>
-
-            {/* Cart Summary */}
-            <div className="py-4 border-t">
-              <CartSummary />
-            </div>
-
-            {/* Checkout Button */}
-            <div className="pt-4 border-t">
-              <Button onClick={handleCheckout} className="w-full bg-amber-600 hover:bg-amber-700" size="lg">
-                {viLocale.cart.checkout}
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-
-              <p className="text-xs text-muted-foreground text-center mt-2">
-                Phí vận chuyển và thuế sẽ được tính khi thanh toán
-              </p>
-            </div>
           </div>
         )}
       </SheetContent>
