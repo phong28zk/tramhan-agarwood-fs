@@ -91,44 +91,9 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
     return hasAttemptedSubmit && errors[fieldName]
   }
 
-  // Helper function to get error message
-  const getErrorMessage = (fieldName: keyof ShippingFormData) => {
-    return errors[fieldName]?.message || "Trường này là bắt buộc"
-  }
-
-  // Enhanced validation wrapper
-  const validateAndSubmit = async (data: ShippingFormData) => {
-    try {
-      console.log('🔍 Starting form validation...')
-
-      // Validate required fields
-      const validationResult = shippingSchema.safeParse(data)
-
-      if (!validationResult.success) {
-        console.error('❌ Validation failed:', validationResult.error.issues)
-        setHasAttemptedSubmit(true)
-        return
-      }
-
-      console.log('✅ Validation passed')
-      await handleFormSubmit(validationResult.data)
-
-    } catch (error) {
-      console.error('💥 Form submission error:', error)
-      // In a real app, this would show a toast notification
-    }
-  }
-
   const handleFormSubmit = (data: ShippingFormData) => {
-    // Debug logging
-    console.group('🚚 Shipping Form Submission')
-    console.log('Form Data:', data)
-    console.log('Validation State:', { hasAttemptedSubmit, errors })
-    console.log('Timestamp:', new Date().toISOString())
-    console.groupEnd()
-
     setHasAttemptedSubmit(true)
-
+    
     const shippingAddress: ShippingAddress = {
       fullName: data.fullName,
       phone: data.phone,
@@ -140,13 +105,9 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
       postalCode: data.postalCode || undefined,
     }
 
-    // Additional logging for address processing
-    console.log('📍 Processed Shipping Address:', shippingAddress)
-
     // Save address if requested
     if (data.saveAddress) {
       addAddress(shippingAddress)
-      console.log('💾 Address saved to user store')
     }
 
     onSubmit(shippingAddress)
@@ -214,7 +175,7 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
 
       {/* New Address Form */}
       {showNewAddressForm && (
-        <form onSubmit={handleSubmit(validateAndSubmit)} className="space-y-6">
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Full Name */}
             <div className="space-y-2">
@@ -223,7 +184,7 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
               </Label>
               <Input id="fullName" {...register("fullName")} placeholder="Nhập họ và tên" />
               {shouldShowError("fullName") && (
-                <p className="text-sm text-red-500">{getErrorMessage("fullName")}</p>
+                <p className="text-sm text-red-500">Required</p>
               )}
             </div>
 
@@ -234,7 +195,7 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
               </Label>
               <Input id="phone" {...register("phone")} placeholder="0123 456 789" />
               {shouldShowError("phone") && (
-                <p className="text-sm text-red-500">{getErrorMessage("phone")}</p>
+                <p className="text-sm text-red-500">Required</p>
               )}
             </div>
           </div>
@@ -248,7 +209,7 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
               {...register("email")}
               placeholder="email@example.com"
             />
-            {shouldShowError("email") && <p className="text-sm text-red-500">{getErrorMessage("email")}</p>}
+            {shouldShowError("email") && <p className="text-sm text-red-500">Required</p>}
           </div>
 
           {/* Province */}
@@ -268,7 +229,7 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
                 ))}
               </SelectContent>
             </Select>
-            {shouldShowError("province") && <p className="text-sm text-red-500">{getErrorMessage("province")}</p>}
+            {shouldShowError("province") && <p className="text-sm text-red-500">Required</p>}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -278,7 +239,7 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
                 {viLocale.checkout.district} <span className="text-red-500">*</span>
               </Label>
               <Input id="district" {...register("district")} placeholder="Nhập quận/huyện" />
-              {shouldShowError("district") && <p className="text-sm text-red-500">{getErrorMessage("district")}</p>}
+              {shouldShowError("district") && <p className="text-sm text-red-500">Required</p>}
             </div>
 
             {/* Ward */}
@@ -287,7 +248,7 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
                 {viLocale.checkout.ward} <span className="text-red-500">*</span>
               </Label>
               <Input id="ward" {...register("ward")} placeholder="Nhập phường/xã" />
-              {shouldShowError("ward") && <p className="text-sm text-red-500">{getErrorMessage("ward")}</p>}
+              {shouldShowError("ward") && <p className="text-sm text-red-500">Required</p>}
             </div>
           </div>
 
@@ -297,7 +258,7 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
               {viLocale.checkout.address} <span className="text-red-500">*</span>
             </Label>
             <Input id="address" {...register("address")} placeholder="Số nhà, tên đường" />
-            {shouldShowError("address") && <p className="text-sm text-red-500">{getErrorMessage("address")}</p>}
+            {shouldShowError("address") && <p className="text-sm text-red-500">Required</p>}
           </div>
 
           {/* Postal Code */}
