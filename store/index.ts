@@ -223,6 +223,11 @@ export const useCartStore = create<CartStore>()(
         items: state.items,
         promoCode: state.promoCode,
       }),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.recalculateTotal()
+        }
+      },
     },
   ),
 )
