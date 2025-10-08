@@ -262,7 +262,12 @@ export function CheckoutForm({ onOrderComplete }: CheckoutFormProps) {
           {/* Order Summary Sidebar */}
           <div className="lg:col-span-1">
             <div className="sticky top-4">
-              <OrderSummary showEditButton={currentStep !== "review"} onEdit={() => (window.location.href = "/cart")} />
+              <OrderSummary
+                showEditButton={currentStep !== "review"}
+                onEdit={() => (window.location.href = "/cart")}
+                showQRCode={currentStep === "payment" || currentStep === "review"}
+                orderId={currentOrder?.id}
+              />
 
               {/* Step Navigation */}
               {currentStep !== "shipping" && (
