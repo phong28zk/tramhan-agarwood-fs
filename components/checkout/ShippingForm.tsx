@@ -79,61 +79,34 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
   }
 
   const handleFormSubmit = (data: ShippingFormData) => {
-    console.log('🔥 NEW ADDRESS FORM SUBMIT CLICKED!')
-    console.log('Form data received:', data)
-    console.log('All form values via getValues:', getValues())
-    console.log('onSubmit function exists:', typeof onSubmit)
-
-    // Get the actual current values
-    const currentValues = getValues()
-    console.log('Current values from getValues:', currentValues)
-
     setHasAttemptedSubmit(true)
 
-    // Use the data parameter if it has values, otherwise use getValues()
-    const formData = data.fullName ? data : currentValues
-
     const shippingAddress: ShippingAddress = {
-      fullName: formData.fullName || "Default Name",
-      phone: formData.phone || "0000000000",
-      email: formData.email || undefined,
-      address: formData.address || "Default Address",
-      ward: formData.ward || "Default Ward",
-      district: formData.district || "Default District",
-      province: formData.province || selectedProvince || "Hà Nội",
-      postalCode: formData.postalCode || undefined,
+      fullName: data.fullName,
+      phone: data.phone,
+      email: data.email || undefined,
+      address: data.address,
+      ward: data.ward,
+      district: data.district,
+      province: data.province || selectedProvince,
+      postalCode: data.postalCode || undefined,
     }
 
-    console.log('📍 Final shipping address to submit:', shippingAddress)
-
     // Save address if requested
-    if (formData.saveAddress) {
+    if (data.saveAddress) {
       addAddress(shippingAddress)
     }
 
-    console.log('✅ Calling onSubmit with shipping address')
     onSubmit(shippingAddress)
-    console.log('✅ onSubmit called - navigation should happen now!')
   }
 
   const handleSavedAddressSubmit = () => {
-    console.log('🔥 SAVED ADDRESS SUBMIT CLICKED!')
-    console.log('Selected address:', selectedSavedAddress)
-    console.log('onSubmit function exists:', typeof onSubmit)
-
     if (selectedSavedAddress) {
-      console.log('✅ Calling onSubmit with saved address')
       onSubmit(selectedSavedAddress)
-      console.log('✅ onSubmit called successfully')
-    } else {
-      console.error('❌ No selected saved address!')
     }
   }
 
   const handleSelectSavedAddress = (address: ShippingAddress) => {
-    console.log('🏠 SAVED ADDRESS SELECTED!')
-    console.log('Selected address:', address)
-
     setValue("fullName", address.fullName)
     setValue("phone", address.phone)
     setValue("email", address.email || "")
@@ -142,12 +115,10 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
     setValue("district", address.district)
     setValue("province", address.province)
     setValue("postalCode", address.postalCode || "")
-    clearErrors() // Clear any existing errors when selecting saved address
+    clearErrors()
     setSelectedSavedAddress(address)
     setShowNewAddressForm(false)
-    setHasAttemptedSubmit(false) // Reset submit attempt flag
-
-    console.log('✅ Address selection complete')
+    setHasAttemptedSubmit(false)
   }
 
   return (
@@ -201,50 +172,19 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
             {/* Submit button for saved addresses */}
             {selectedSavedAddress && !showNewAddressForm && (
               <Button
-                onClick={() => {
-                  console.log('🔥 SAVED ADDRESS BUTTON CLICKED!')
-                  handleSavedAddressSubmit()
-                }}
+                onClick={handleSavedAddressSubmit}
                 className="w-full bg-amber-600 hover:bg-amber-700"
               >
                 Tiếp tục thanh toán
               </Button>
             )}
-
-            {/* Debug: Always show button for testing */}
-            <Button
-              onClick={() => {
-                console.log('🧪 DEBUG BUTTON CLICKED!')
-                console.log('Current state:', {
-                  selectedSavedAddress: !!selectedSavedAddress,
-                  showNewAddressForm,
-                  addresses: addresses.length,
-                  shouldShowButton: selectedSavedAddress && !showNewAddressForm
-                })
-                if (selectedSavedAddress) {
-                  console.log('Calling handleSavedAddressSubmit...')
-                  handleSavedAddressSubmit()
-                } else {
-                  console.warn('No saved address selected for debug button')
-                }
-              }}
-              variant="secondary"
-              className="w-full"
-            >
-              🧪 DEBUG: Submit Saved Address
-            </Button>
           </div>
         </div>
       )}
 
       {/* New Address Form */}
       {showNewAddressForm && (
-        <form onSubmit={(e) => {
-          console.log('🔥 FORM SUBMIT EVENT TRIGGERED!')
-          console.log('Form errors:', errors)
-          console.log('Form values:', watch())
-          handleSubmit(handleFormSubmit)(e)
-        }} className="space-y-6">
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Full Name */}
             <div className="space-y-2">
@@ -370,55 +310,6 @@ export function ShippingForm({ initialData, onSubmit, onCancel }: ShippingFormPr
                 {isSubmitting ? "Đang xử lý..." : "Tiếp tục thanh toán"}
               </Button>
             </div>
-
-            {/* Debug button to bypass validation */}
-            <Button
-              type="button"
-              onClick={() => {
-                console.log('🧪 BYPASS VALIDATION BUTTON CLICKED!')
-                const currentValues = watch()
-                console.log('Current form values:', currentValues)
-
-                // Get values directly from DOM if watch() fails
-                const fullNameInput = document.getElementById('fullName') as HTMLInputElement
-                const phoneInput = document.getElementById('phone') as HTMLInputElement
-                const emailInput = document.getElementById('email') as HTMLInputElement
-                const addressInput = document.getElementById('address') as HTMLInputElement
-                const wardInput = document.getElementById('ward') as HTMLInputElement
-                const districtInput = document.getElementById('district') as HTMLInputElement
-
-                const domValues = {
-                  fullName: fullNameInput?.value || '',
-                  phone: phoneInput?.value || '',
-                  email: emailInput?.value || '',
-                  address: addressInput?.value || '',
-                  ward: wardInput?.value || '',
-                  district: districtInput?.value || '',
-                  province: selectedProvince || 'Hà Nội'
-                }
-
-                console.log('DOM values:', domValues)
-
-                // Create address with actual values from DOM
-                const testAddress: ShippingAddress = {
-                  fullName: domValues.fullName || "Test User",
-                  phone: domValues.phone || "0123456789",
-                  email: domValues.email || undefined,
-                  address: domValues.address || "Test Address",
-                  ward: domValues.ward || "Test Ward",
-                  district: domValues.district || "Test District",
-                  province: domValues.province,
-                  postalCode: undefined,
-                }
-
-                console.log('Calling onSubmit with test address:', testAddress)
-                onSubmit(testAddress)
-              }}
-              variant="secondary"
-              className="w-full"
-            >
-              🧪 DEBUG: Force Submit (Use DOM Values)
-            </Button>
           </div>
         </form>
       )}

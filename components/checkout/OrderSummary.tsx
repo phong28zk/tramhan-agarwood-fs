@@ -1,5 +1,6 @@
 "use client"
 
+import { useMemo } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Button } from "../ui/button"
 import { Badge } from "../ui/badge"
@@ -13,10 +14,28 @@ import { PaymentQRCode } from "../payment/PaymentQRCode"
 interface OrderSummaryProps {
   showEditButton?: boolean
   onEdit?: () => void
+  showQRCode?: boolean
+  orderId?: string
 }
 
-export function OrderSummary({ showEditButton = true, onEdit }: OrderSummaryProps) {
+export function OrderSummary({ showEditButton = true, onEdit, showQRCode = false, orderId }: OrderSummaryProps) {
   const { items, subtotal, shipping, tax, discount, total, promoCode } = useCartStore()
+
+  // Memoize QR code rendering to prevent unnecessary re-renders
+  const qrCodeSection = useMemo(() => {
+    if (!showQRCode || total <= 0) return null
+
+    return (
+      <div className="mt-4">
+        <PaymentQRCode
+          amount={total}
+          orderId={orderId}
+          paymentMethods={['vnpay', 'momo', 'zalopay']}
+          showGeneratedQR={false}
+        />
+      </div>
+    )
+  }, [showQRCode, total, orderId])
 
   return (
     <Card>
@@ -143,6 +162,9 @@ export function OrderSummary({ showEditButton = true, onEdit }: OrderSummaryProp
             </p>
           </div>
         )}
+
+        {/* QR Code Payment Section */}
+        {qrCodeSection}
 
       </CardContent>
     </Card>

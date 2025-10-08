@@ -7,9 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Alert, AlertDescription } from "../ui/alert"
 import { Loader2, QrCode, CreditCard, Building2 } from "lucide-react"
 import type { Order, PaymentResult } from "../../types"
-import { vnpayService } from "../../services/payment/vnpay"
-import { momoService } from "../../services/payment/momo"
-import { zalopayService } from "../../services/payment/zalopay"
 
 interface VNPaymentFormProps {
   order: Order
@@ -28,24 +25,39 @@ export const VNPaymentForm: React.FC<VNPaymentFormProps> = ({ order, onPaymentCo
     setSelectedMethod(method)
 
     try {
-      let paymentUrl: string
+      // Call the API to create payment URL
+      const response = await fetch("/api/payment/vnpay/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: order.total,
+          orderId: order.id,
+          orderInfo: `Thanh toán đơn hàng ${order.id} - ${order.items.length} sản phẩm`,
+          locale: "vn",
+        }),
+      })
 
-      switch (method) {
-        case "vnpay":
-          paymentUrl = await vnpayService.createPaymentUrl(order)
-          break
-        case "momo":
-          paymentUrl = await momoService.createPaymentUrl(order)
-          break
-        case "zalopay":
-          paymentUrl = await zalopayService.createPaymentUrl(order)
-          break
-        default:
-          throw new Error("Invalid payment method")
+      if (!response.ok) {
+        throw new Error("Failed to create payment URL")
       }
 
-      // Redirect to payment gateway
-      window.location.href = paymentUrl
+      const data = await response.json()
+
+      if (!data.success || !data.paymentUrl) {
+        throw new Error("Invalid payment URL response")
+      }
+
+      // Log payment initiation
+      console.log("🚀 Redirecting to VNPay:", {
+        orderId: order.id,
+        amount: order.total,
+        paymentUrl: data.paymentUrl,
+      })
+
+      // Redirect to VNPay payment gateway
+      window.location.href = data.paymentUrl
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Có lỗi xảy ra khi tạo thanh toán"
       setError(errorMessage)

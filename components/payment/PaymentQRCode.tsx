@@ -1,19 +1,49 @@
 "use client"
 
+import { useMemo } from "react"
+import { QRCodeSVG } from "qrcode.react"
 import Image from "next/image"
 import { formatVNDCurrency } from "../../utils"
 
-interface QRCodeGeneratorProps {
+interface PaymentQRCodeProps {
   amount: number
   orderId?: string
   paymentMethods?: string[]
+  showGeneratedQR?: boolean
 }
 
-export const PaymentQRCode: React.FC<QRCodeGeneratorProps> = ({
+interface VietQRData {
+  amount: number
+  currency: string
+  orderId?: string
+  description: string
+  accountNumber: string
+  accountName: string
+  bankCode: string
+}
+
+export const PaymentQRCode: React.FC<PaymentQRCodeProps> = ({
   amount,
   orderId,
-  paymentMethods = ['momo', 'zalopay', 'vnpay']
+  paymentMethods = ['momo', 'zalopay', 'vnpay'],
+  showGeneratedQR = false
 }) => {
+  // Generate QR code data following Vietnamese VietQR standard
+  const qrData = useMemo<string>(() => {
+    const data: VietQRData = {
+      amount,
+      currency: 'VND',
+      orderId,
+      description: orderId ? `TH${orderId}` : 'Thanh toan Tram Han Agarwood',
+      accountNumber: '0971117310',
+      accountName: 'PHAM DIEU LINH',
+      bankCode: 'VIETQR'
+    }
+
+    // Format as JSON for QR code
+    return JSON.stringify(data, null, 0)
+  }, [amount, orderId])
+
   if (amount <= 0) {
     return null
   }
@@ -31,14 +61,29 @@ export const PaymentQRCode: React.FC<QRCodeGeneratorProps> = ({
 
         <div className="flex justify-center">
           <div className="relative">
-            <Image
-              src="/qr-code.png"
-              alt="QR Code thanh toán VietQR"
-              width={280}
-              height={350}
-              className="rounded-lg border border-gray-200 shadow-sm"
-              priority
-            />
+            {showGeneratedQR ? (
+              // Generated QR Code using qrcode.react
+              <div className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm">
+                <QRCodeSVG
+                  value={qrData}
+                  size={200}
+                  level="H"
+                  includeMargin={true}
+                  bgColor="#ffffff"
+                  fgColor="#000000"
+                />
+              </div>
+            ) : (
+              // Static VietQR image
+              <Image
+                src="/qr-code.png"
+                alt="QR Code thanh toán VietQR"
+                width={280}
+                height={350}
+                className="rounded-lg border border-gray-200 shadow-sm"
+                priority
+              />
+            )}
           </div>
         </div>
 
