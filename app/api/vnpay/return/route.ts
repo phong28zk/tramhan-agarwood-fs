@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyVNPayReturn, getVNPayResponseMessage } from '@/lib/vnpay';
+import { verifyVNPayReturn } from '@/lib/vnpay';
 
 /**
  * GET /api/vnpay/return
@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
       vnp_Params[key] = value;
     });
 
-    const secureHash = vnp_Params['vnp_SecureHash'];
+    const secureHash = vnp_Params['vnp_SecureHash'] || '';
     const responseCode = vnp_Params['vnp_ResponseCode'];
     const orderId = vnp_Params['vnp_TxnRef'];
     const amount = vnp_Params['vnp_Amount'];
@@ -28,8 +28,14 @@ export async function GET(request: NextRequest) {
 
     const hashSecret = process.env.VNPAY_HASH_SECRET || '';
 
-    // Verify signature
-    const isValid = verifyVNPayReturn(vnp_Params, hashSecret);
+    // Log params before verification for debugging
+    console.log('📋 VNPay params received:', {
+      params: vnp_Params,
+      secureHashReceived: secureHash,
+    });
+
+    // Verify signature - pass secureHash separately
+    const isValid = verifyVNPayReturn(vnp_Params, secureHash, hashSecret);
 
     console.log('🔔 VNPay Return Callback:', {
       orderId,
