@@ -25,6 +25,7 @@ export async function POST(request: NextRequest) {
       url: process.env.VNPAY_URL || '',
       returnUrl: `${request.nextUrl.origin}/payment/vnpay/return`,
     };
+    console.log('💳 VNPay configuration:', vnpayConfig);
 
     // Validate configuration
     if (!vnpayConfig.tmnCode || !vnpayConfig.hashSecret || !vnpayConfig.url) {

@@ -27,7 +27,7 @@ function sortObject(obj: Record<string, any>): Record<string, any> {
 
   for (key in obj) {
     if (obj.hasOwnProperty(key)) {
-      str.push(encodeURIComponent(key));
+      str.push(key);
     }
   }
   str.sort();
@@ -86,6 +86,12 @@ export function createVNPayPaymentUrl(
   const hmac = crypto.createHmac('sha512', config.hashSecret);
   const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
 
+  // Debug logging
+  console.log('🔑 Payment signature created:', {
+    signData,
+    signature: signed,
+  });
+
   vnp_Params.vnp_SecureHash = signed;
 
   // Create payment URL
@@ -96,19 +102,28 @@ export function createVNPayPaymentUrl(
 
 /**
  * Verify VNPay return signature
+ * Note: Params are already URL-decoded by the browser, so we need to re-encode them
+ * to match the signature VNPay created with encoded values
  */
 export function verifyVNPayReturn(
   params: Record<string, any>,
+  secureHash: string,
   hashSecret: string
 ): boolean {
-  const secureHash = params.vnp_SecureHash;
-  delete params.vnp_SecureHash;
-  delete params.vnp_SecureHashType;
-
+  // Sort and encode params (browser has already decoded them, so we re-encode)
   const sortedParams = sortObject(params);
   const signData = qs.stringify(sortedParams, { encode: false });
   const hmac = crypto.createHmac('sha512', hashSecret);
   const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
+
+  // Debug logging
+  console.log('🔐 Signature verification:', {
+    rawParams: params,
+    signData,
+    signedHash: signed,
+    receivedHash: secureHash,
+    match: secureHash === signed,
+  });
 
   return secureHash === signed;
 }
