@@ -18,6 +18,7 @@ Hướng dẫn đầy đủ về tích hợp cổng thanh toán VNPay cho ứng 
 10. [Kiểm thử](#kiểm-thử)
 11. [Xử lý sự cố](#xử-lý-sự-cố)
 12. [Các bước tiếp theo](#các-bước-tiếp-theo)
+13. [Công nghệ sử dụng](#công-nghệ-sử-dụng)
 
 ---
 
@@ -1455,13 +1456,13 @@ Nếu gặp vấn đề với implementation này:
 
 ---
 
-## Ghi chú Migration
+## Công nghệ sử dụng
 
 Implementation này được chuyển đổi từ official VNPay Node.js SDK với các cải tiến:
 
 ✅ **Cải tiến**:
-1. **TypeScript**: Hỗ trợ đầy đủ type safety
-2. **Next.js App Router**: Sử dụng Next.js 14+ conventions
+1. **TypeScript**: Hỗ trợ đầy đủ type safety với Typescript version 5 (https://www.typescriptlang.org/)
+2. **Next.js App Router**: Sử dụng Next.js 14 với App Router và API routes (https://nextjs.org/docs/app)
 3. **Logging nâng cao**: Console.group và structured logging
 4. **Error Handling**: Xử lý lỗi toàn diện hơn
 5. **Modern Fetch API**: Không dùng thư viện request deprecated
