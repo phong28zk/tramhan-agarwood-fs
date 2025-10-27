@@ -18,7 +18,7 @@ Hướng dẫn đầy đủ về tích hợp cổng thanh toán VNPay cho ứng 
 10. [Kiểm thử](#kiểm-thử)
 11. [Xử lý sự cố](#xử-lý-sự-cố)
 12. [Các bước tiếp theo](#các-bước-tiếp-theo)
-13. [ông nghệ sử dụng](#công-nghệ-sử-dụng)
+13. [Công nghệ sử dụng](#công-nghệ-sử-dụng)
 
 ---
 
